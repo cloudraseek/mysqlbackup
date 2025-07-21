@@ -65,7 +65,7 @@ const outputFolder = 'tables';
 const databaseOptions = [
   {
     id: 1,
-    name: 'Remote Production',
+    name: 'db1',
     host: process.env.DB_HOST_ONE,
     user: process.env.DB_USER_ONE,
     password: process.env.DB_PASSWORD_ONE,
@@ -74,7 +74,7 @@ const databaseOptions = [
   },
   {
     id: 2,
-    name: 'Remote QA',
+    name: 'db2',
     host: process.env.DB_HOST_TWO,
     user: process.env.DB_USER_TWO,
     password: process.env.DB_PASSWORD_TWO,
@@ -83,7 +83,7 @@ const databaseOptions = [
   },
   {
     id: 3,
-    name: 'Local Production',
+    name: 'db3',
     host: process.env.DB_HOST_ONE_LOCAL,
     user: process.env.DB_USER_ONE_LOCAL,
     password: process.env.DB_PASSWORD_ONE_LOCAL,
@@ -92,7 +92,7 @@ const databaseOptions = [
   },
   {
     id: 4,
-    name: 'Local QA',
+    name: 'db4',
     host: process.env.DB_HOST_TWO_LOCAL,
     user: process.env.DB_USER_TWO_LOCAL,
     password: process.env.DB_PASSWORD_TWO_LOCAL,
