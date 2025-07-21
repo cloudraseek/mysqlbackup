@@ -12,8 +12,8 @@ const REMOTE_CONFIG = {
 
 const LOCAL_CONFIG = {
   host: process.env.DB_HOST_ONE_LOCAL,
-  user: 'root',
-  password: 'root',
+  user: process.env.DB_USER_ONE_LOCAL,
+  password: process.env.DB_PASSWORD_ONE_LOCAL,
   database: process.env.DB_NAME_ONE_LOCAL // Local DB must exist
 };
 

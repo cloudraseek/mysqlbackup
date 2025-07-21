@@ -24,7 +24,7 @@ const argv = yargs(hideBin(process.argv))
   .argv;
 
 
-const peffective_date = '2024-06-01';
+const peffective_date = '2024-08-01';
   const mapper = {
     1: {
         ihaStatus: 'PENDING-RENEWAL-UNDERWRITING',
