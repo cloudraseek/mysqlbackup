@@ -14,6 +14,13 @@ const argv = yargs(hideBin(process.argv))
     type: 'number',
     demandOption: true, 
   })
+  .option('p_ai',{
+    alias:'pai',
+    describe:'p_ai, preferred in case of multiple record for proper identification',
+    type:'number',
+    default:null,
+    demandOption:false
+  })
   .option('host', {
     alias: 'h',
     describe: 'The host environment',
@@ -24,7 +31,7 @@ const argv = yargs(hideBin(process.argv))
   .argv;
 
 
-const peffective_date = '2024-08-01';
+const peffective_date = '2024-07-01';
   const mapper = {
     1: {
         ihaStatus: 'PENDING-RENEWAL-UNDERWRITING',
@@ -33,7 +40,8 @@ const peffective_date = '2024-08-01';
         status:'ACTIVE',
         Approval:'1',
         peffective_date:peffective_date,
-        pterm_date: null
+        pterm_date: null,
+        term_date:null
       },
     2: {
         ihaStatus: 'PENDING-RENEWAL-SIGNATURE',
@@ -42,7 +50,8 @@ const peffective_date = '2024-08-01';
         status:'ACTIVE',
         Approval:'1',
         peffective_date:peffective_date,
-        pterm_date: null
+        pterm_date: null,
+        term_date:null
       },
     3: {
         ihaStatus: 'RENEWAL-SIGNATURE-RECEIVED-READY-TO-ACTIVATE',
@@ -51,7 +60,8 @@ const peffective_date = '2024-08-01';
         status:'ACTIVE',
         Approval:'1',
         peffective_date:peffective_date,
-        pterm_date: null
+        pterm_date: null,
+        term_date:null
       },
     5: {
       ihaStatus: 'ACTIVE',
@@ -69,8 +79,8 @@ if (!to){
 }
 
 const policy = argv.policyId;
+const p_ai = argv.pai;
 const host = argv.host;
 
-
-export {to,policy,host};
+export {to,policy,host,p_ai};
 
