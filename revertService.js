@@ -33,12 +33,13 @@ await connectDB();
 
 
 
-const checkPolicyUpdates = async (to,policy) => {
+const checkPolicyUpdates = async (to,policy, options = {}) => {
   const [res] = await sequelize.query(
     'SELECT elgb_act,elgb_id FROM policy_updates WHERE elgb_id IN (SELECT MAX(pu.elgb_id) FROM policy_updates pu WHERE elgb_policyid = :policyId GROUP BY elgb_policyid)',
     {
       replacements: { policyId: policy },
       type: Sequelize.QueryTypes.SELECT,
+      ...options
     }
   );
   if (!res){
@@ -56,6 +57,7 @@ const checkPolicyUpdates = async (to,policy) => {
     {
       replacements: { elgbAct: to.code, elgbId: res.elgb_id },
       type: Sequelize.QueryTypes.UPDATE,
+      ...options
     }
   );
   if (rowsEffected == 1){
@@ -77,7 +79,7 @@ const colorize = (color,msg) => {
   console.log(chalk.bold[color](msg));
 }
 
-const updatePlanPolicies = async (to,policy,p_ai) => {
+const updatePlanPolicies = async (to,policy,p_ai, options={}) => {
   // check if p_ai is provided
   const [p_aiDetails] = await sequelize.query(
     'SELECT MAX(p_ai) AS max_p_ai, count(*) as plan_policy_count FROM plan_policies WHERE policy_num = :policyId',
@@ -96,19 +98,22 @@ const updatePlanPolicies = async (to,policy,p_ai) => {
   }
 
   const [_,rowsEffected] = await sequelize.query(
-    `UPDATE plan_policies SET pstatus = ${to.pstatus},pterm_date = ${to.pterm_date}, peffective_date = ${to.peffective_date} where p_ai = ${selectedPai}`
+    `UPDATE plan_policies SET pstatus = ${to.pstatus},pterm_date = ${to.pterm_date}, peffective_date = ${to.peffective_date} where p_ai = ${selectedPai}`,
+    {
+      ...options
+    }
   );
   colorize('green',`[+] plan_policies updates: ${rowsEffected.info}`);
 }
 
-const updatePolicies = async (to,policy) => {
+const updatePolicies = async (to,policy, options) => {
   try{
 
     const [_,rowsEffected] = await sequelize.query(
       `UPDATE policies SET status = '${to.status}',term_date = ${to.term_date} ,approval = ${to.Approval} WHERE policy_id = ${policy}`,
       {
-        replacements: { status: to.status, approval:to.Approval ,policyId: policy,effective_date: to.peffective_date },
         type: Sequelize.QueryTypes.UPDATE,
+        ...options
       }
     );
     colorize('green',`[+] policies updates: ${rowsEffected}`);
@@ -144,9 +149,9 @@ const verify = async (policy, p_ai) => {
 const main = async () => {
   const transaction = await sequelize.transaction();
   try{
-
-    const policyUpdate = await checkPolicyUpdates(to,policy)
-    await Promise.all([updatePlanPolicies(to,policy,p_ai),updatePolicies(to,policy)]);
+    const options = {transaction};
+    const policyUpdate = await checkPolicyUpdates(to,policy, options);
+    await Promise.all([updatePlanPolicies(to,policy,p_ai, options),updatePolicies(to,policy, options)]);
     await transaction.commit();
     colorize('green',"\n\n[+] DONE\n\n");
     

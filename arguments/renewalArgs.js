@@ -15,7 +15,7 @@ const argv = yargs(hideBin(process.argv))
     demandOption: true, 
   })
   .option('p_ai',{
-    alias:'pai',
+    alias:'a',
     describe:'p_ai, preferred in case of multiple record for proper identification',
     type:'number',
     default:null,
@@ -79,7 +79,7 @@ if (!to){
 }
 
 const policy = argv.policyId;
-const p_ai = argv.pai;
+const p_ai = argv.p_ai;
 const host = argv.host;
 
 export {to,policy,host,p_ai};
