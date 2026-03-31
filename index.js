@@ -45,7 +45,7 @@ const readline = async (message) => {
 
 
 
-const allTables = "agent_info backup_signature bundled_plans carrier_info cust_addresses dependent_policies dependents elevatedv_backup_new gid_assoc_fee group_census group_census_report group_info group_plans iha_admin_plan_selection iha_email_answers iha_email_questionnaires iha_files_generated_users iha_pdf_history_infos iha_policies_predictions med_medications new_assoc_fee payment_eft plan_policies plan_policies_member plan_pricing plan_tier plans policies policy_updates rep_assoc_fee rep_assoc_fee_waive signatures tier_updates user_activity_details userinfo annual_income plan_policies_dependents plan_enrollment_text";
+const allTables = "agent_info backup_signature bundled_plans carrier_info cust_addresses dependent_policies dependents elevatedv_backup_new gid_assoc_fee group_census group_census_report group_info group_plans iha_admin_plan_selection iha_email_answers iha_email_questionnaires iha_files_generated_users iha_pdf_history_infos iha_policies_predictions med_medications new_assoc_fee payment_eft plan_policies plan_policies_member plan_pricing plan_tier plans policies policy_updates rep_assoc_fee rep_assoc_fee_waive signatures tier_updates user_activity_details userinfo annual_income plan_policies_dependents plan_enrollment_text rep_info_requests iha_policies_backup iha_member_info iha_plan_info_backup iha_batches iha_notes iha_acknowledge_infos iha_pending_termination_pdf iha_lkup_changes dependent_documents";
 const outputFolder = 'tables';
 
 const databaseOptions = [
@@ -141,7 +141,9 @@ const processingTimes = {};
 async function dumpTable(tableName,sourceDB) {
   const startTime = Date.now();
   const outputFile = path.join(outputFolder, `${tableName}.sql`);
-  const command = `mysqldump -h ${sourceDB.host} -u "${sourceDB.user}" -p"${sourceDB.password}" "${sourceDB.database}" ${tableName} > ${outputFile}`;
+  const command = `mysqldump -h ${sourceDB.host} --no-tablespaces -u "${sourceDB.user}" -p"${sourceDB.password}" "${sourceDB.database}" ${tableName} > ${outputFile}`;
+
+  
 
   return new Promise((resolve, reject) => {
     console.log(`Dumping table: ${tableName} to ${outputFile}`);
@@ -167,7 +169,8 @@ async function dumpTable(tableName,sourceDB) {
 
 async function importTable(filePath, tableName,destDB) {
   const startTime = Date.now();
-  const importCommand = `mysql -u ${destDB.user} -p"${destDB.password}" ${destDB.database} < ${filePath}`;
+  const importCommand = `mysql -h ${destDB.host} -u ${destDB.user} -p"${destDB.password}" ${destDB.database} < ${filePath}`;
+  console.log(importCommand)
   console.log(`Importing table ${tableName} from ${filePath}`);
   return new Promise((resolve, reject) => {
     exec(importCommand, (error, stdout, stderr) => {
@@ -250,6 +253,7 @@ const main = async () => {
     sourceDB = databaseOptions[0]; // first one qa prod_health_company1 
     destDB = databaseOptions[3]; // third on locaal prod_deathl_company1
   }
+  console.log(sourceDB,destDB)
   if (!argv.do && !argv.io){
     console.log(selectedTables);
     const answer = await readline("import and export all selected tables (y/n): ")
